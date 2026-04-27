@@ -144,7 +144,9 @@ function ScanTab({ user, onRefresh }) {
   const [photos, setPhotos]     = useState({ front:null, back:null, left:null, right:null, imei:null });
   const [photoIdx, setPhotoIdx] = useState(0);
   const [offer, setOffer]       = useState(null);
+  const [handoff, setHandoff]   = useState(null);
   const [device, setDevice]     = useState(null);
+  const [showModal, setShowModal] = useState(false);
   const [collMode, setCollMode] = useState('drop_off');
   const [error, setError]       = useState('');
   const [loading, setLoading]   = useState(false);
@@ -188,8 +190,10 @@ function ScanTab({ user, onRefresh }) {
     setLoading(false);
     if (err) { setError(err); return; }
     setOffer(data.offer);
+    setHandoff(data.handoff);
     setDevice(data.device);
     setStage('offer');
+    setShowModal(true);  // show popup immediately
   };
 
   const handleAccept = async () => {
@@ -204,7 +208,7 @@ function ScanTab({ user, onRefresh }) {
   const reset = () => {
     setStage('search'); setQuery(''); setResults([]); setSelected(null);
     setPhotos({ front:null, back:null, left:null, right:null, imei:null });
-    setPhotoIdx(0); setOffer(null); setDevice(null); setError('');
+    setPhotoIdx(0); setOffer(null); setHandoff(null); setDevice(null); setError(''); setShowModal(false);
   };
 
   const btnGreen   = { background:'#0D3B26', color:'#fff', border:'none', borderRadius:8, padding:'12px 24px', fontSize:14, fontWeight:600, cursor:'pointer' };
@@ -348,6 +352,61 @@ function ScanTab({ user, onRefresh }) {
         </div>
       )}
 
+      {/* ── HANDOFF CODE POPUP MODAL ── */}
+      {showModal && handoff && offer && (
+        <div style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.6)', zIndex:1000, display:'flex', alignItems:'center', justifyContent:'center', padding:16 }}>
+          <div style={{ background:'#fff', borderRadius:20, padding:32, maxWidth:460, width:'100%', boxShadow:'0 24px 64px rgba(0,0,0,0.25)', position:'relative' }}>
+
+            {/* Close */}
+            <button onClick={() => setShowModal(false)} style={{ position:'absolute', top:16, right:16, background:'#F4F6F3', border:'none', borderRadius:'50%', width:32, height:32, cursor:'pointer', fontSize:16, color:'#6B7B6E', display:'flex', alignItems:'center', justifyContent:'center' }}>✕</button>
+
+            {/* Header */}
+            <div style={{ textAlign:'center', marginBottom:24 }}>
+              <div style={{ fontSize:40, marginBottom:10 }}>🎉</div>
+              <h2 style={{ margin:'0 0 6px', color:'#0D3B26', fontSize:20 }}>Your Offer is Ready!</h2>
+              <p style={{ margin:0, color:'#6B7B6E', fontSize:13 }}>Based on your personalised pricing profile</p>
+            </div>
+
+            {/* Price range */}
+            <div style={{ background:'linear-gradient(135deg,#0D3B26,#1A6B3C)', borderRadius:12, padding:'18px 20px', marginBottom:16, textAlign:'center' }}>
+              <div style={{ color:'rgba(255,255,255,0.55)', fontSize:11, marginBottom:6, textTransform:'uppercase', letterSpacing:'0.05em' }}>Estimated Credit Range</div>
+              <div style={{ color:'#fff', fontSize:28, fontWeight:700 }}>KES {fmt(offer.c_low)} – KES {fmt(offer.c_high)}</div>
+              <div style={{ color:'rgba(255,255,255,0.45)', fontSize:11, marginTop:4 }}>Includes uplift β = KES {fmt(offer.beta)}</div>
+            </div>
+
+            {/* Handoff code — the main thing */}
+            <div style={{ background:'#E8F5EE', border:'2px solid #1A6B3C', borderRadius:12, padding:'20px', marginBottom:16, textAlign:'center' }}>
+              <div style={{ fontSize:12, fontWeight:700, color:'#1A6B3C', textTransform:'uppercase', letterSpacing:'0.08em', marginBottom:10 }}>Your Handoff Code</div>
+              <div style={{ fontFamily:'monospace', fontSize:36, fontWeight:800, color:'#0D3B26', letterSpacing:'0.15em', marginBottom:8 }}>
+                {handoff.code}
+              </div>
+              <div style={{ fontSize:12, color:'#6B7B6E' }}>Show this code to the agent at the collection point</div>
+              <div style={{ fontSize:11, color:'#aaa', marginTop:4 }}>
+                ⏱ Valid for 72 hours · expires {new Date(handoff.expires_at).toLocaleDateString('en-KE')}
+              </div>
+            </div>
+
+            {/* Nearest station */}
+            {handoff.station_name && (
+              <div style={{ background:'#F7FAF8', border:'1px solid #E4EDE7', borderRadius:10, padding:'14px 16px', marginBottom:20 }}>
+                <div style={{ fontSize:12, fontWeight:700, color:'#0D3B26', marginBottom:6, textTransform:'uppercase', letterSpacing:'0.05em' }}>📍 Your Nearest Collection Point</div>
+                <div style={{ fontWeight:600, fontSize:14, color:'#0D3B26' }}>{handoff.station_name}</div>
+                {handoff.station_address && <div style={{ fontSize:12, color:'#6B7B6E', marginTop:3 }}>{handoff.station_address}</div>}
+                {handoff.station_phone   && <div style={{ fontSize:12, color:'#6B7B6E', marginTop:2 }}>📞 {handoff.station_phone}</div>}
+              </div>
+            )}
+
+            <div style={{ background:'#FFF8E1', border:'1px solid #FFE082', borderRadius:8, padding:'10px 14px', marginBottom:20, fontSize:12, color:'#5D4037', lineHeight:1.5 }}>
+              ℹ️ Final price confirmed after the agent completes a physical check. The exact amount will be within the range shown above.
+            </div>
+
+            <button onClick={() => setShowModal(false)} style={{ ...btnGreen, width:'100%', fontSize:15, padding:14 }}>
+              Got it — I'll head to the station
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* ── Stage: offer ── */}
       {stage === 'offer' && offer && (
         <div style={card}>
@@ -358,19 +417,36 @@ function ScanTab({ user, onRefresh }) {
               <p style={{ margin:0, color:'#6B7B6E', fontSize:14 }}>Based on your income level, proximity, awareness, and hoarding profile</p>
             </div>
 
-            <div style={{ background:'linear-gradient(135deg,#0D3B26,#1A6B3C)', borderRadius:12, padding:'20px 24px', marginBottom:20, textAlign:'center' }}>
+            {/* Price range */}
+            <div style={{ background:'linear-gradient(135deg,#0D3B26,#1A6B3C)', borderRadius:12, padding:'20px 24px', marginBottom:16, textAlign:'center' }}>
               <div style={{ color:'rgba(255,255,255,0.6)', fontSize:12, marginBottom:8 }}>ESTIMATED CREDIT RANGE</div>
-              <div style={{ color:'#fff', fontSize:32, fontWeight:700 }}>
-                KES {fmt(offer.c_low)} – KES {fmt(offer.c_high)}
-              </div>
-              <div style={{ color:'rgba(255,255,255,0.5)', fontSize:12, marginTop:6 }}>
-                Includes behavioural uplift β = KES {fmt(offer.beta)}
-              </div>
+              <div style={{ color:'#fff', fontSize:32, fontWeight:700 }}>KES {fmt(offer.c_low)} – KES {fmt(offer.c_high)}</div>
+              <div style={{ color:'rgba(255,255,255,0.5)', fontSize:12, marginTop:6 }}>Includes uplift β = KES {fmt(offer.beta)}</div>
             </div>
 
+            {/* Handoff code inline */}
+            {handoff && (
+              <div style={{ background:'#E8F5EE', border:'2px solid #1A6B3C', borderRadius:12, padding:'16px 20px', marginBottom:16, textAlign:'center' }}>
+                <div style={{ fontSize:11, fontWeight:700, color:'#1A6B3C', textTransform:'uppercase', letterSpacing:'0.08em', marginBottom:8 }}>Your Handoff Code</div>
+                <div style={{ fontFamily:'monospace', fontSize:32, fontWeight:800, color:'#0D3B26', letterSpacing:'0.15em' }}>{handoff.code}</div>
+                <div style={{ fontSize:12, color:'#6B7B6E', marginTop:6 }}>Show this to the agent at <strong>{handoff.station_name}</strong></div>
+                <button onClick={() => setShowModal(true)} style={{ marginTop:8, background:'transparent', border:'1px solid #1A6B3C', borderRadius:6, padding:'5px 14px', fontSize:12, color:'#1A6B3C', cursor:'pointer', fontWeight:600 }}>
+                  View full details
+                </button>
+              </div>
+            )}
+
+            {handoff?.station_name && (
+              <div style={{ background:'#F7FAF8', border:'1px solid #E4EDE7', borderRadius:10, padding:'12px 16px', marginBottom:16 }}>
+                <div style={{ fontSize:12, fontWeight:700, color:'#0D3B26', marginBottom:4 }}>📍 Nearest Collection Point</div>
+                <div style={{ fontWeight:600, fontSize:14, color:'#0D3B26' }}>{handoff.station_name}</div>
+                {handoff.station_address && <div style={{ fontSize:12, color:'#6B7B6E', marginTop:2 }}>{handoff.station_address}</div>}
+                {handoff.station_phone   && <div style={{ fontSize:12, color:'#6B7B6E', marginTop:2 }}>📞 {handoff.station_phone}</div>}
+              </div>
+            )}
+
             <div style={{ background:'#FFF8E1', border:'1px solid #FFE082', borderRadius:8, padding:'10px 14px', marginBottom:20, fontSize:13, color:'#5D4037' }}>
-              ℹ️ This is a Stage 1 estimate. A certified agent will complete a physical assessment
-              to set the exact final price (C_final) within this range.
+              ℹ️ Stage 1 estimate only. Agent physical check sets the exact C_final within this range.
             </div>
 
             <div style={{ marginBottom:20 }}>
@@ -404,13 +480,24 @@ function ScanTab({ user, onRefresh }) {
 
       {/* ── Stage: accepted ── */}
       {stage === 'accepted' && (
-        <div style={{ ...card, padding:40, textAlign:'center' }}>
+        <div style={{ ...card, padding:36, textAlign:'center' }}>
           <div style={{ fontSize:48, marginBottom:16 }}>✅</div>
           <h2 style={{ margin:'0 0 10px', color:'#0D3B26' }}>Offer Accepted!</h2>
-          <p style={{ color:'#6B7B6E', marginBottom:24, fontSize:14 }}>
-            Your device is now queued for agent verification.
-            You'll receive the final price (C_final) after physical assessment.
+          <p style={{ color:'#6B7B6E', marginBottom:20, fontSize:14 }}>
+            Your device is queued for physical assessment.
+            Once the agent confirms, your wallet will be credited instantly.
           </p>
+
+          {/* Repeat the code on the accepted screen */}
+          {handoff && (
+            <div style={{ background:'#E8F5EE', border:'2px solid #1A6B3C', borderRadius:12, padding:'20px', marginBottom:20, display:'inline-block', minWidth:240 }}>
+              <div style={{ fontSize:11, fontWeight:700, color:'#1A6B3C', textTransform:'uppercase', letterSpacing:'0.08em', marginBottom:8 }}>Your Handoff Code</div>
+              <div style={{ fontFamily:'monospace', fontSize:32, fontWeight:800, color:'#0D3B26', letterSpacing:'0.15em' }}>{handoff.code}</div>
+              <div style={{ fontSize:12, color:'#6B7B6E', marginTop:6 }}>Show this at <strong>{handoff.station_name}</strong></div>
+              {handoff.station_address && <div style={{ fontSize:11, color:'#aaa', marginTop:3 }}>{handoff.station_address}</div>}
+            </div>
+          )}
+
           <div style={{ display:'flex', gap:10, justifyContent:'center' }}>
             <button style={btnGreen} onClick={reset}>Scan Another Device</button>
           </div>
@@ -470,7 +557,20 @@ function DevicesTab({ devices }) {
 // WALLET TAB
 // ══════════════════════════════════════════════════════════
 function WalletTab({ wallet, transactions }) {
-  const [showForm, setShowForm] = useState(false);
+  const [showForm,    setShowForm]    = useState(false);
+  const [prevBalance, setPrevBalance] = useState(null);
+  const [newCredit,   setNewCredit]   = useState(null);  // flash notification
+
+  // Detect when balance increases (agent credited wallet)
+  useEffect(() => {
+    const current = parseFloat(wallet?.balance || 0);
+    if (prevBalance !== null && current > prevBalance) {
+      const diff = current - prevBalance;
+      setNewCredit(diff);
+      setTimeout(() => setNewCredit(null), 8000); // show for 8 seconds
+    }
+    setPrevBalance(current);
+  }, [wallet?.balance]); // eslint-disable-line
   const [phone,    setPhone]    = useState('');
   const [amount,   setAmount]   = useState('');
   const [loading,  setLoading]  = useState(false);
@@ -500,6 +600,18 @@ function WalletTab({ wallet, transactions }) {
         <div style={{ color:'rgba(255,255,255,0.55)', fontSize:12, marginBottom:6 }}>AVAILABLE BALANCE</div>
         <div style={{ color:'#fff', fontSize:42, fontWeight:700 }}>KES {fmt(balance)}</div>
       </div>
+
+      {/* Live credit notification — fires when agent confirms recycled */}
+      {newCredit && (
+        <div style={{ background:'#E8F5EE', border:'2px solid #1A6B3C', borderRadius:10, padding:'14px 18px', marginBottom:16, display:'flex', alignItems:'center', gap:12, animation:'slideDown 0.3s ease' }}>
+          <span style={{ fontSize:24 }}>🎉</span>
+          <div>
+            <div style={{ fontWeight:700, color:'#0D3B26', fontSize:14 }}>KES {fmt(newCredit)} credited to your wallet!</div>
+            <div style={{ fontSize:12, color:'#6B7B6E', marginTop:2 }}>Your device has been recycled. Payment received.</div>
+          </div>
+        </div>
+      )}
+      <style>{`@keyframes slideDown{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}`}</style>
 
       {msg && <div style={{ background:'#E8F5EE', border:'1px solid #A5D6A7', borderRadius:8, padding:'10px 14px', fontSize:13, color:'#1A6B3C', marginBottom:16 }}>{msg}</div>}
       {err && <div style={{ background:'#FFEBEE', border:'1px solid #FFCDD2', borderRadius:8, padding:'10px 14px', fontSize:13, color:'#C62828', marginBottom:16 }}>{err}</div>}
@@ -638,6 +750,13 @@ export default function Dashboard() {
     if (walRes.data?.transactions) setTransactions(walRes.data.transactions);
   }, []);
 
+  // Poll wallet every 15 seconds — balance updates instantly when agent confirms recycled
+  const pollWallet = useCallback(async () => {
+    const { data } = await walletService.get();
+    if (data?.wallet)       setWallet(data.wallet);
+    if (data?.transactions) setTransactions(data.transactions);
+  }, []);
+
   useEffect(() => {
     if (locStatus !== 'granted' || !location) return;
     stationService.list(location).then(({ data }) => { if (data?.stations) setStations(data.stations); });
@@ -654,8 +773,11 @@ export default function Dashboard() {
       await loadData();
       setLoading(false);
     })();
-    return () => { mounted = false; };
-  }, [navigate, loadData, requestLoc]);
+    // Start wallet polling every 15 seconds
+    const pollInterval = setInterval(pollWallet, 15000);
+
+    return () => { mounted = false; clearInterval(pollInterval); };
+  }, [navigate, loadData, requestLoc, pollWallet]);
 
   if (loading) return (
     <div style={{ display:'flex', justifyContent:'center', alignItems:'center', height:'100vh', background:'#F4F6F3' }}>
