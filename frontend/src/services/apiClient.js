@@ -72,6 +72,7 @@ export const deviceService = {
 export const agentDeviceService = {
   async list()  { return request('/agent/devices', {}, true); },
   async get(id) { return request(`/agent/devices/${id}`, {}, true); },
+  async lookupByCode(code) { return request(`/agent/devices/lookup?code=${encodeURIComponent(code)}`, {}, true); },
   async assess(id, payload) { return request(`/agent/devices/${id}/assess`, { method:'POST', body:JSON.stringify(payload) }, true); },
   async confirmRecycled(id) { return request(`/agent/devices/${id}/confirm-recycled`, { method:'POST', body:JSON.stringify({}) }, true); },
   async stats() { return request('/agent/stats', {}, true); },
