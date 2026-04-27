@@ -1,0 +1,14 @@
+/* AgentLogin extends the base login styles */
+.agent-badge {
+  display: inline-block;
+  background: #E8F5EE;
+  border: 1px solid #A5D6A7;
+  border-radius: 8px;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #0D3B26;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 12px;
+}

@@ -1,0 +1,87 @@
+.landing { font-family: var(--font-family); color: var(--text-primary); }
+
+/* Nav */
+.landing-nav { display:flex; align-items:center; justify-content:space-between; padding:20px 48px; background:#fff; border-bottom:1px solid #E4EDE7; position:sticky; top:0; z-index:100; }
+.nav-logo { display:flex; align-items:center; gap:8px; font-weight:700; font-size:18px; color:#0D3B26; }
+.nav-logo .logo-icon { font-size:22px; }
+.nav-links { display:flex; align-items:center; gap:28px; }
+.nav-links a { color:#4a5568; font-size:14px; font-weight:500; text-decoration:none; transition:color 0.2s; }
+.nav-links a:hover { color:#0D3B26; }
+.nav-login { color:#0D3B26 !important; font-weight:600 !important; }
+.nav-cta { background:#0D3B26; color:#fff !important; padding:10px 20px; border-radius:8px; font-weight:600 !important; }
+.nav-cta:hover { background:#1A6B3C !important; }
+
+/* Hero */
+.hero-section { padding:80px 48px 60px; text-align:center; background:linear-gradient(160deg,#F0F7F4 0%,#E8F5EE 100%); }
+.hero-badge { display:inline-block; background:#E8F5EE; color:#0D3B26; border:1px solid #A5D6A7; border-radius:20px; padding:6px 16px; font-size:13px; font-weight:600; margin-bottom:24px; }
+.hero-title { font-size:52px; font-weight:800; line-height:1.1; color:#0D3B26; margin-bottom:20px; }
+.hero-highlight { color:#1A6B3C; }
+.hero-subtitle { font-size:18px; color:#4a5568; max-width:640px; margin:0 auto 36px; line-height:1.7; }
+.hero-actions { display:flex; gap:16px; justify-content:center; flex-wrap:wrap; margin-bottom:16px; }
+.btn-hero-primary { background:#0D3B26; color:#fff; padding:16px 32px; border-radius:10px; font-size:16px; font-weight:700; text-decoration:none; transition:background 0.2s; }
+.btn-hero-primary:hover { background:#1A6B3C; color:#fff; }
+.btn-hero-secondary { background:#fff; color:#0D3B26; padding:16px 28px; border-radius:10px; font-size:15px; font-weight:600; text-decoration:none; border:2px solid #0D3B26; transition:all 0.2s; }
+.btn-hero-secondary:hover { background:#0D3B26; color:#fff; }
+.hero-note { font-size:13px; color:#6B7B6E; margin-top:8px; }
+
+/* Sections */
+.section-label { font-size:12px; font-weight:700; text-transform:uppercase; color:#1A6B3C; letter-spacing:0.1em; margin-bottom:12px; }
+.section-sub { font-size:16px; color:#6B7B6E; margin-bottom:48px; }
+
+/* How it works */
+.how-section { padding:80px 48px; text-align:center; background:#fff; }
+.how-section h2 { font-size:36px; margin-bottom:12px; }
+.steps-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:32px; max-width:900px; margin:0 auto; }
+.step-card { background:#F7FAF8; border:1px solid #E4EDE7; border-radius:14px; padding:32px 24px; text-align:left; }
+.step-number { font-size:12px; font-weight:700; color:#1A6B3C; margin-bottom:12px; }
+.step-icon { font-size:32px; margin-bottom:16px; }
+.step-card h3 { font-size:16px; margin-bottom:10px; color:#0D3B26; }
+.step-card p { font-size:14px; color:#6B7B6E; line-height:1.6; margin:0; }
+
+/* Why Login */
+.why-section { padding:48px; background:#FFF8E1; }
+.why-card { max-width:800px; margin:0 auto; display:flex; gap:24px; align-items:flex-start; background:#fff; border:1px solid #FFE082; border-radius:14px; padding:28px; }
+.why-icon { font-size:32px; flex-shrink:0; }
+.why-card h3 { margin:0 0 10px; font-size:17px; color:#0D3B26; }
+.why-card p { margin:0; font-size:14px; color:#4a5568; line-height:1.7; }
+
+/* Partners */
+.partners-section { padding:80px 48px; text-align:center; background:#F7FAF8; }
+.partners-section h2 { font-size:36px; margin-bottom:12px; }
+.partners-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:24px; max-width:900px; margin:0 auto; }
+.partner-card { background:#fff; border:1px solid #E4EDE7; border-radius:14px; padding:28px 24px; text-align:left; }
+.partner-badge { font-size:11px; font-weight:700; color:#1A6B3C; background:#E8F5EE; padding:3px 10px; border-radius:20px; display:inline-block; margin-bottom:12px; }
+.partner-card h3 { font-size:16px; margin:0 0 8px; color:#0D3B26; }
+.partner-card p { font-size:13px; color:#6B7B6E; margin:0 0 12px; line-height:1.6; }
+.partner-locations { font-size:12px; color:#1A6B3C; font-weight:600; }
+
+/* Pricing / Formula */
+.pricing-section { padding:80px 48px; text-align:center; background:#fff; }
+.pricing-section h2 { font-size:36px; margin-bottom:12px; }
+.formula-box { max-width:700px; margin:0 auto; background:#0D3B26; border-radius:14px; padding:32px; text-align:left; }
+.formula-row { display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid rgba(255,255,255,0.08); gap:16px; flex-wrap:wrap; }
+.formula-row:last-of-type { border-bottom:none; }
+.formula-label { font-size:12px; font-weight:600; color:rgba(255,255,255,0.55); white-space:nowrap; }
+.formula-row code { font-size:13px; color:#7FD4A8; background:rgba(255,255,255,0.06); padding:4px 10px; border-radius:6px; }
+.highlight-row code { color:#fff; font-weight:700; font-size:15px; }
+.formula-note { font-size:12px; color:rgba(255,255,255,0.45); margin:16px 0 0; line-height:1.6; }
+
+/* CTA */
+.cta-section { padding:80px 48px; text-align:center; background:linear-gradient(135deg,#0D3B26,#1A6B3C); }
+.cta-section h2 { font-size:36px; color:#fff; margin-bottom:12px; }
+.cta-section p { color:rgba(255,255,255,0.7); margin-bottom:32px; font-size:16px; }
+
+/* Footer */
+.landing-footer { padding:32px 48px; background:#0D3B26; text-align:center; }
+.footer-logo { font-size:18px; font-weight:700; color:#fff; margin-bottom:8px; }
+.landing-footer p { color:rgba(255,255,255,0.5); font-size:13px; margin:0; }
+
+@media(max-width:768px) {
+  .landing-nav { padding:16px 20px; }
+  .nav-links a:not(.nav-login):not(.nav-cta) { display:none; }
+  .hero-section { padding:48px 20px; }
+  .hero-title { font-size:32px; }
+  .how-section,.partners-section,.pricing-section,.cta-section { padding:48px 20px; }
+  .steps-grid,.partners-grid { grid-template-columns:1fr; }
+  .why-section { padding:32px 20px; }
+}

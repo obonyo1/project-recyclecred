@@ -1,0 +1,102 @@
+/* VerifyEmail shares the same layout as CheckEmail */
+.verify-page {
+  min-height: 100vh;
+  background: #F4F6F3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.verify-container {
+  width: 100%;
+  max-width: 420px;
+}
+
+.verify-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 40px 36px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+  text-align: center;
+}
+
+.verify-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+.verify-header h1 {
+  font-size: 24px;
+  color: #0D3B26;
+  margin: 0 0 10px;
+}
+
+.verify-header p {
+  color: #6B7B6E;
+  font-size: 14px;
+  margin: 0 0 6px;
+}
+
+.email-address {
+  font-weight: 700;
+  color: #0D3B26 !important;
+  font-size: 15px !important;
+}
+
+.error-message {
+  background: #FFEBEE;
+  border: 1px solid #FFCDD2;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 13px;
+  color: #C62828;
+  margin: 12px 0;
+}
+
+.success-message {
+  background: #E8F5EE;
+  border: 1px solid #A5D6A7;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 13px;
+  color: #1A6B3C;
+  margin: 12px 0;
+}
+
+.resend-section {
+  margin-top: 24px;
+}
+
+.resend-section p {
+  font-size: 13px;
+  color: #8A9E8E;
+  margin-bottom: 10px;
+}
+
+.resend-button {
+  background: #F4F6F3;
+  border: 1px solid #E4EDE7;
+  border-radius: 8px;
+  padding: 12px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #0D3B26;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.resend-button:hover  { background: #E8F5EE; }
+.resend-button:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.verify-footer {
+  margin-top: 20px;
+  font-size: 14px;
+  color: #6B7B6E;
+}
+
+.verify-footer a {
+  color: #1A6B3C;
+  font-weight: 600;
+  text-decoration: none;
+}
